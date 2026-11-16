@@ -1,0 +1,147 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: pytest / py${{ matrix.python }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: "3.9"
+          - os: ubuntu-latest
+            python: "3.12"
+          - os: ubuntu-latest
+            python: "3.13"
+          # Windows 单独跑一遍：颜色探测里的 VT 开关与编码降级只在 Windows 生效
+          - os: windows-latest
+            python: "3.9"
+          - os: windows-latest
+            python: "3.13"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install (no runtime dependencies)
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+          python -c "import deadcite, sys; print('deadcite', deadcite.__version__, 'on', sys.version.split()[0])"
+
+      - name: Pytest
+        run: python -m pytest -q
+
+      - name: CLI smoke test
+        shell: bash
+        run: |
+          python -m deadcite --help > /dev/null
+          python -m deadcite --version
+
+      - name: Piped output must stay free of ANSI escapes
+        shell: bash
+        run: |
+          python - <<'PY'
+          import subprocess
+          import sys
+
+          proc = subprocess.run(
+              [sys.executable, "-m", "deadcite", "examples/report.md"],
+              capture_output=True,
+          )
+          assert proc.returncode == 1, f"expected exit code 1, got {proc.returncode}"
+          assert b"\x1b[" not in proc.stdout, "ANSI escape leaked into piped output"
+          assert b"\x1b[" not in proc.stderr, "ANSI escape leaked into piped stderr"
+          print("piped output is plain text")
+          PY
+
+      - name: JSON contract
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import subprocess
+          import sys
+
+          # 样例里确有 4 条确证问题，退出码 1 是预期行为，不能当作失败
+          proc = subprocess.run(
+              [sys.executable, "-m", "deadcite", "examples/report.md", "--json"],
+              capture_output=True,
+          )
+          assert proc.returncode == 1, f"expected exit code 1, got {proc.returncode}"
+          payload = json.loads(proc.stdout)
+          assert isinstance(payload, list) and len(payload) == 1
+          doc = payload[0]
+          assert doc["schema_version"] == 1
+          assert doc["summary"]["problems"] == 4
+          print("json contract ok")
+          PY
+
+  package:
+    name: build wheel
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Build
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build --wheel --outdir dist
+
+      - name: Wheel must ship py.typed and declare no dependencies
+        shell: bash
+        run: |
+          python - <<'PY'
+          import pathlib
+          import zipfile
+
+          wheels = list(pathlib.Path("dist").glob("*.whl"))
+          assert len(wheels) == 1, wheels
+          with zipfile.ZipFile(wheels[0]) as zf:
+              names = zf.namelist()
+              assert "deadcite/py.typed" in names, names
+              meta_name = next(
+                  n for n in names
+                  if n.startswith("deadcite-") and n.endswith(".dist-info/METADATA")
+              )
+              meta = zf.read(meta_name).decode("utf-8")
+          # 只允许 "extra == ..." 的可选依赖，运行期依赖必须为空
+          runtime = [
+              line for line in meta.splitlines()
+              if line.startswith("Requires-Dist:") and 'extra ==' not in line
+          ]
+          assert not runtime, f"zero-dependency promise broken: {runtime}"
+          print(f"{wheels[0].name} ok: py.typed shipped, no runtime Requires-Dist")
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheel
+          path: dist/*.whl
+          if-no-files-found: error
