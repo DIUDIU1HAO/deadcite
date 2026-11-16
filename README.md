@@ -28,20 +28,24 @@ python -m deadcite examples/report.md
 ## 输出长这样
 
 ```
-  9  ✗ 数字在原文中不存在
-      2024 年中国咖啡市场规模已达 1,842 亿元，行业进入高速扩张期 [1]。
-      · 这些数字在信源里找不到：1,842
-      [1] · 信源：coffee-market-2024.md
+examples/report.md
+
+   9  ✗ 数字在原文中不存在
+        2024 年中国咖啡市场规模已达 1,842 亿元，行业进入高速扩张期 [1]。
+        · 这些数字在信源里找不到：1,842
+        [1] · 信源：coffee-market-2024.md
 
   33  ✗ 参考文献里没有这一条
-      咖啡消费正在从社交属性转向功能性摄入，早餐时段占比显著上升 [6]。
-      · 正文引用了 [6]，但参考文献表里没有第 6 条
-      [6]
+        咖啡消费正在从社交属性转向功能性摄入，早餐时段占比显著上升 [6]。
+        · 正文引用了 [6]，但参考文献表里没有第 6 条
+        [6]
 
 ──────────────────────────────────────────────────────
   12 条引用 · 4 条有问题 · 2 条可疑 · 6 条通过
-  伪造率 33.3%
+  伪造率 33.3%（4/12，只算确定性错误）
 ```
+
+终端宽度决定折行，管道与重定向时自动输出纯文本（同时支持 `NO_COLOR`、`TERM=dumb`、`--no-color`），不会把 ANSI 转义写进日志文件。
 
 ## 五类判定
 
@@ -96,20 +100,21 @@ deadcite report.md                    # 信源自动取同目录的 sources/
 deadcite report.md -s sources/        # 指定信源
 deadcite report.md --fetch            # 对引用里的链接实际发起请求
 deadcite report.md --json > out.json  # 机器可读
+deadcite report.md -q                 # 只留汇总，适合进 CI 日志
 deadcite report.md --fail-on suspect  # 可疑也判失败（严格模式）
 ```
 
-退出码：`0` 未发现问题 / `1` 发现问题 / `2` 参数或读取错误。
+退出码：`0` 未发现问题 / `1` 达到 `--fail-on` 阈值 / `2` 参数或读取错误。完整参数见 `deadcite --help`。
 
 加 `--fetch` 后样例里的第五条问题（死链）才会被触发，预期是 5 条确证有问题。
 
 ## 测试
 
 ```bash
-python -m pytest -q        # 24 passed
+python -m pytest -q        # 31 passed
 ```
 
-测试覆盖五类判定的正反例，以及四类已知误报的回归（行内代码、徽章图片、图片外壳链接、JSON 输出形状）。规则可以少，误报不能有——所以每一条新规则都要求带一个「不该报」的用例。
+测试覆盖五类判定的正反例，以及四类已知误报的回归（行内代码、徽章图片、图片外壳链接、JSON 输出形状），另有终端呈现的回归：非 TTY 不出 ANSI、`NO_COLOR` 降级、折行不超显示宽度、JSON 契约字段。规则可以少，误报不能有——所以每一条新规则都要求带一个「不该报」的用例。
 
 ## 输出格式
 
@@ -118,8 +123,15 @@ python -m pytest -q        # 24 passed
 ```json
 [
   {
+    "schema_version": 1,
+    "tool": "deadcite",
+    "version": "0.2.0",
     "file": "report.md",
-    "summary": {"total": 12, "problems": 4, "suspects": 2, "ok": 6},
+    "threshold": 0.16,
+    "fail_on": "problem",
+    "summary": {
+      "total": 12, "problems": 4, "suspects": 2, "ok": 6, "problem_ratio": 0.3333
+    },
     "citations": [
       {
         "line": 9,
@@ -131,6 +143,8 @@ python -m pytest -q        # 24 passed
   }
 ]
 ```
+
+字段只增不改，`schema_version` 变化才表示有破坏性调整；诊断信息一律走 stderr，所以 `deadcite report.md --json | jq .[0].summary` 永远拿到干净 JSON。
 
 ## 接到生成流水线后面
 

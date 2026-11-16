@@ -9,7 +9,7 @@ import unicodedata
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
-from typing import Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Dict, Iterable, List, Optional, Sequence, Set, Tuple
 
 TEXT_EXTS = {".md", ".markdown", ".txt", ".text", ".html", ".htm", ".rst", ".csv"}
 
@@ -24,6 +24,8 @@ KEEP_RE = re.compile(r"[^0-9a-z\u4e00-\u9fff]+")
 
 @dataclass
 class Source:
+    """一份信源；``error`` 非空表示这份信源没能读进来，不能拿来比对。"""
+
     name: str
     text: str
     origin: str
@@ -73,6 +75,10 @@ def load_sources(paths: Sequence[str]) -> List[Source]:
 
 
 def fetch_url(url: str, timeout: float = 10.0) -> Source:
+    """抓取一个链接并抽成纯文本；失败时把原因放进 ``Source.error`` 而不是抛异常。
+
+    调用方只需要看 ``error`` 是否为空，不必区分 DNS 失败还是 404。
+    """
     req = urllib.request.Request(
         url,
         headers={"User-Agent": "deadcite/0.1 (+https://github.com/DIUDIU1HAO/deadcite)"},
@@ -92,7 +98,7 @@ def normalize(text: str) -> str:
     return KEEP_RE.sub("", text)
 
 
-def shingles(text: str, n: int = 3) -> set:
+def shingles(text: str, n: int = 3) -> Set[str]:
     norm = normalize(text)
     if len(norm) < n:
         return {norm} if norm else set()
@@ -125,9 +131,9 @@ def split_chunks(text: str, size: int = 420, overlap: int = 120) -> List[str]:
     return out
 
 
-def numbers_in(text: str) -> set:
+def numbers_in(text: str) -> Set[str]:
     """抽取文本中的数字（去千分位、去尾随零），用于判断某个数字是否在源文中出现过。"""
-    out = set()
+    out: Set[str] = set()
     for m in NUMBER_RE.finditer(unicodedata.normalize("NFKC", text)):
         raw = m.group(0).replace(",", "")
         if "." in raw:
@@ -151,10 +157,12 @@ class Match:
 
 
 class SourceIndex:
-    def __init__(self, sources: Iterable[Source]):
+    """把信源切块并预计算数字集合，供逐条论断快速查询。"""
+
+    def __init__(self, sources: Iterable[Source]) -> None:
         self.sources: List[Source] = [s for s in sources]
         self._chunks: List[Tuple[str, str]] = []  # (source_name, chunk)
-        self._numbers: Dict[str, set] = {}
+        self._numbers: Dict[str, Set[str]] = {}
         for src in self.sources:
             if src.error or not src.text.strip():
                 continue
@@ -164,6 +172,7 @@ class SourceIndex:
 
     @property
     def usable(self) -> List[Source]:
+        """能参与比对的信源；空列表为假值，可直接 ``if not index.usable``。"""
         return [s for s in self.sources if not s.error and s.text.strip()]
 
     def by_name(self, name: str) -> Optional[Source]:
@@ -196,6 +205,7 @@ class SourceIndex:
         return None
 
     def best(self, query: str) -> Optional[Match]:
+        """返回与 query 最相似的信源块；没有任何块时返回 None。"""
         best: Optional[Match] = None
         for name, chunk in self._chunks:
             score = similarity(query, chunk)
@@ -203,5 +213,5 @@ class SourceIndex:
                 best = Match(score=score, chunk=chunk, source=name)
         return best
 
-    def numbers_of(self, source_name: str) -> set:
+    def numbers_of(self, source_name: str) -> Set[str]:
         return self._numbers.get(source_name, set())

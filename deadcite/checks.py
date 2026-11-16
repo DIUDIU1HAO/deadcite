@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Sequence, Tuple
+from typing import Dict, List, Optional, Sequence, Set, Tuple
 
 from .parse import Claim, Reference
 from .sources import Source, SourceIndex, fetch_url, is_distinctive, numbers_in
@@ -12,7 +12,7 @@ PROBLEM = "problem"  # 确定性错误：来源不存在、链接打不开、数
 SUSPECT = "suspect"  # 启发式怀疑：字面重合度低，不构成确证
 OK = "ok"
 
-KIND_LABEL = {
+KIND_LABEL: Dict[str, str] = {
     "MISSING_REF": "参考文献里没有这一条",
     "NO_TARGET": "找不到对应信源",
     "UNREACHABLE": "信源打不开",
@@ -24,6 +24,8 @@ KIND_LABEL = {
 
 @dataclass
 class Issue:
+    """一条具体发现：``kind`` 是稳定的机器标识，``message`` 给人看。"""
+
     kind: str
     message: str
     severity: str
@@ -36,6 +38,8 @@ class Issue:
 
 @dataclass
 class Verdict:
+    """一条论断的判定结果；``status`` 由 issues 里最严重的一条决定。"""
+
     claim: Claim
     issues: List[Issue] = field(default_factory=list)
     source: Optional[str] = None
@@ -106,6 +110,18 @@ def check(
     threshold: float = 0.16,
     allow_fetch: bool = False,
 ) -> List[Verdict]:
+    """逐条判定引用真伪，返回与 ``claims`` 等长的判定列表。
+
+    Args:
+        claims: 正文里带引用的论断。
+        refs: ``parse_references()`` 解析出的参考文献表。
+        index: 已加载的信源索引。
+        threshold: 字面重合度下限，低于它记一条 ``LOW_OVERLAP``（可疑）。
+        allow_fetch: 为 ``False`` 时不联网，仅凭本地信源判断。
+
+    Returns:
+        每条论断一个 :class:`Verdict`，顺序与输入一致。
+    """
     fetched: Dict[str, Source] = {}
     verdicts: List[Verdict] = []
 
@@ -139,7 +155,7 @@ def check(
 
         best_score = 0.0
         best_source: Optional[str] = None
-        all_numbers: set = set()
+        all_numbers: Set[str] = set()
 
         for src in targets:
             if src.error:
@@ -184,6 +200,7 @@ def check(
 
 
 def summarize(verdicts: Sequence[Verdict]) -> Dict[str, int]:
+    """统计四类计数：总数、确定性错误、可疑、通过。"""
     total = len(verdicts)
     problems = sum(1 for v in verdicts if v.status == PROBLEM)
     suspects = sum(1 for v in verdicts if v.status == SUSPECT)

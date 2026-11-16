@@ -216,3 +216,98 @@ def test_json_output_is_always_an_array(tmp_path, capsys):
         payload = json.loads(out)
         assert isinstance(payload, list)
         assert len(payload) == len(targets)
+
+
+# --------------------------------------------------------------------------- #
+# 终端呈现：颜色降级、显示宽度、JSON 契约
+# --------------------------------------------------------------------------- #
+def test_no_ansi_when_stdout_is_not_a_tty(capsys):
+    """管道/重定向时不能把 ANSI 转义写进文件，这是 ruff 级的硬要求。"""
+    from deadcite.cli import main
+
+    main([os.path.join(EXAMPLES, "report.md")])
+    out = capsys.readouterr().out
+    assert "\033[" not in out
+
+
+def test_color_is_disabled_by_env_even_on_a_tty(monkeypatch):
+    """NO_COLOR / TERM=dumb / CLICOLOR=0 任一命中即降级为纯文本。"""
+    import io
+
+    from deadcite import theme
+
+    class TtyStream(io.StringIO):
+        def isatty(self):
+            return True
+
+    monkeypatch.setattr(theme, "_enable_windows_vt", lambda: True)
+    monkeypatch.delenv("NO_COLOR", raising=False)
+    monkeypatch.delenv("TERM", raising=False)
+    monkeypatch.delenv("CLICOLOR", raising=False)
+    assert theme.supports_color(TtyStream()) is True
+
+    monkeypatch.setenv("NO_COLOR", "1")
+    assert theme.supports_color(TtyStream()) is False
+
+    monkeypatch.delenv("NO_COLOR")
+    monkeypatch.setenv("TERM", "dumb")
+    assert theme.supports_color(TtyStream()) is False
+
+    monkeypatch.delenv("TERM")
+    monkeypatch.setenv("CLICOLOR", "0")
+    assert theme.supports_color(TtyStream()) is False
+
+
+def test_wrapped_lines_never_exceed_display_width():
+    """折行按显示宽度算，一个汉字算两列。"""
+    from deadcite.theme import display_width, wrap
+
+    text = "这是一段很长的中文说明，用来验证按显示宽度折行不会溢出，" * 6
+    for width in (40, 60):
+        lines = wrap(text, width)
+        assert lines
+        assert all(display_width(line) <= width for line in lines)
+
+
+def test_ascii_fallback_for_narrow_encodings():
+    """GBK 控制台不需要 Unicode 图标，退化成 x / ! / + 与短横线。"""
+    from deadcite.theme import Theme
+
+    theme = Theme(color=False, unicode=False)
+    assert theme.icon("problem") == "x"
+    assert theme.icon("ok") == "+"
+    assert theme.bullet == "-"
+
+
+def test_help_carries_examples_and_exit_codes():
+    from deadcite.cli import build_parser
+
+    text = build_parser(color=False).format_help()
+    assert "示例:" in text and "退出码:" in text
+    assert "--json" in text and "--fail-on" in text
+    assert "\033[" not in text
+
+
+def test_quiet_keeps_only_the_summary(capsys):
+    from deadcite.cli import main
+
+    code = main([os.path.join(EXAMPLES, "report.md"), "-q", "--no-color"])
+    out = capsys.readouterr().out
+    assert code == 1
+    assert "数字在原文中不存在" not in out
+    assert "12 条引用" in out
+
+
+def test_json_declares_schema_version_and_ratio(capsys):
+    """JSON 是契约：schema_version 与派生字段必须存在且可解析。"""
+    import json
+
+    from deadcite.cli import main
+
+    main([os.path.join(EXAMPLES, "report.md"), "--json"])
+    doc = json.loads(capsys.readouterr().out)[0]
+    assert doc["schema_version"] == 1
+    assert doc["tool"] == "deadcite"
+    assert doc["threshold"] == 0.16
+    assert doc["fail_on"] == "problem"
+    assert doc["summary"]["problem_ratio"] == round(4 / 12, 4)

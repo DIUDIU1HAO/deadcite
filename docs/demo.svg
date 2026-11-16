@@ -1,50 +1,53 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="884" height="847" viewBox="0 0 884 847" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
-<rect width="884" height="847" rx="10" fill="#0d1117"/>
-<rect width="884" height="34" rx="10" fill="#161b22"/>
-<rect y="24" width="884" height="10" fill="#161b22"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="699" height="910" viewBox="0 0 699 910" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+<rect width="699" height="910" rx="10" fill="#0d1117"/>
+<rect width="699" height="34" rx="10" fill="#161b22"/>
+<rect y="24" width="699" height="10" fill="#161b22"/>
 <circle cx="20" cy="17" r="5.5" fill="#ff5f56"/>
 <circle cx="40" cy="17" r="5.5" fill="#ffbd2e"/>
 <circle cx="60" cy="17" r="5.5" fill="#27c93f"/>
-<text x="442.0" y="22" fill="#6e7681" font-size="12" text-anchor="middle">deadcite — 引用体检</text>
+<text x="349.5" y="22" fill="#6e7681" font-size="12" text-anchor="middle">deadcite — 引用体检</text>
 <text x="22.0" y="64" fill="#c9d1d9" font-size="13" xml:space="preserve">examples/report.md</text>
-<text x="22.0" y="106" fill="#c9d1d9" font-size="13" xml:space="preserve">  9  </text>
-<text x="64.0" y="106" fill="#f85149" font-size="13" xml:space="preserve">✗</text>
-<text x="72.4" y="106" fill="#c9d1d9" font-size="13" xml:space="preserve"> 数字在原文中不存在</text>
-<text x="22.0" y="127" fill="#c9d1d9" font-size="13" xml:space="preserve">      2024 年中国咖啡市场规模已达 1,842 亿元，行业进入高速扩张期 [1]。</text>
-<text x="22.0" y="148" fill="#6e7681" font-size="13" xml:space="preserve">      · 这些数字在信源里找不到：1,842</text>
-<text x="22.0" y="169" fill="#c9d1d9" font-size="13" xml:space="preserve">      [1] · 信源：coffee-market-2024.md</text>
+<text x="22.0" y="106" fill="#c9d1d9" font-size="13" xml:space="preserve">   9  </text>
+<text x="72.4" y="106" fill="#f85149" font-size="13" xml:space="preserve">✗</text>
+<text x="80.8" y="106" fill="#c9d1d9" font-size="13" xml:space="preserve"> 数字在原文中不存在</text>
+<text x="22.0" y="127" fill="#c9d1d9" font-size="13" xml:space="preserve">        2024 年中国咖啡市场规模已达 1,842 亿元，行业进入高速扩张期 [1]。</text>
+<text x="22.0" y="148" fill="#6e7681" font-size="13" xml:space="preserve">        · 这些数字在信源里找不到：1,842</text>
+<text x="22.0" y="169" fill="#c9d1d9" font-size="13" xml:space="preserve">        [1] · 信源：coffee-market-2024.md</text>
 <text x="22.0" y="211" fill="#c9d1d9" font-size="13" xml:space="preserve">  19  </text>
 <text x="72.4" y="211" fill="#f85149" font-size="13" xml:space="preserve">✗</text>
 <text x="80.8" y="211" fill="#c9d1d9" font-size="13" xml:space="preserve"> 数字在原文中不存在</text>
-<text x="22.0" y="232" fill="#c9d1d9" font-size="13" xml:space="preserve">      品牌复购率已提升至 47.2%，用户黏性显著增强 [3]。</text>
-<text x="22.0" y="253" fill="#6e7681" font-size="13" xml:space="preserve">      · 这些数字在信源里找不到：47.2</text>
-<text x="22.0" y="274" fill="#6e7681" font-size="13" xml:space="preserve">      · 与信源的字面重合度仅 0.04，原文中找不到相近表述  阈值 0.16；转述幅度大时会误判，请人工确认</text>
-<text x="22.0" y="295" fill="#c9d1d9" font-size="13" xml:space="preserve">      [3] · 信源：consumer-survey.md</text>
-<text x="22.0" y="337" fill="#c9d1d9" font-size="13" xml:space="preserve">  27  </text>
-<text x="72.4" y="337" fill="#d29922" font-size="13" xml:space="preserve">!</text>
-<text x="80.8" y="337" fill="#c9d1d9" font-size="13" xml:space="preserve"> 信源打不开</text>
-<text x="22.0" y="358" fill="#c9d1d9" font-size="13" xml:space="preserve">      某头部品牌单店日均出杯量已达 1,200 杯，远超行业平均水平 [2]。</text>
-<text x="22.0" y="379" fill="#6e7681" font-size="13" xml:space="preserve">      · 链接未联网校验：https://example.invalid/coffee/store-efficiency  加 --fetch 可实际抓取该链接</text>
-<text x="22.0" y="400" fill="#c9d1d9" font-size="13" xml:space="preserve">      [2]</text>
-<text x="22.0" y="442" fill="#c9d1d9" font-size="13" xml:space="preserve">  31  </text>
-<text x="72.4" y="442" fill="#f85149" font-size="13" xml:space="preserve">✗</text>
-<text x="80.8" y="442" fill="#c9d1d9" font-size="13" xml:space="preserve"> 找不到对应信源</text>
-<text x="22.0" y="463" fill="#c9d1d9" font-size="13" xml:space="preserve">      据预测，2030 年中国咖啡市场将突破 3,000 亿元，成为全球第二大市场 [4]。</text>
-<text x="22.0" y="484" fill="#6e7681" font-size="13" xml:space="preserve">      · 参考文献「中国咖啡行业白皮书 2025」没有链接，本地也没有同名信源</text>
-<text x="22.0" y="505" fill="#c9d1d9" font-size="13" xml:space="preserve">      [4]</text>
-<text x="22.0" y="547" fill="#c9d1d9" font-size="13" xml:space="preserve">  33  </text>
-<text x="72.4" y="547" fill="#f85149" font-size="13" xml:space="preserve">✗</text>
-<text x="80.8" y="547" fill="#c9d1d9" font-size="13" xml:space="preserve"> 参考文献里没有这一条</text>
-<text x="22.0" y="568" fill="#c9d1d9" font-size="13" xml:space="preserve">      咖啡消费正在从社交属性转向功能性摄入，早餐时段占比显著上升 [6]。</text>
-<text x="22.0" y="589" fill="#6e7681" font-size="13" xml:space="preserve">      · 正文引用了 [6]，但参考文献表里没有第 6 条</text>
-<text x="22.0" y="610" fill="#c9d1d9" font-size="13" xml:space="preserve">      [6]</text>
-<text x="22.0" y="652" fill="#c9d1d9" font-size="13" xml:space="preserve">  35  </text>
-<text x="72.4" y="652" fill="#d29922" font-size="13" xml:space="preserve">!</text>
-<text x="80.8" y="652" fill="#c9d1d9" font-size="13" xml:space="preserve"> 原文中找不到相近表述</text>
-<text x="22.0" y="673" fill="#c9d1d9" font-size="13" xml:space="preserve">      整个产业链正在经历一场由数字化驱动的结构性重塑 [1]。</text>
-<text x="22.0" y="694" fill="#6e7681" font-size="13" xml:space="preserve">      · 与信源的字面重合度仅 0.00，原文中找不到相近表述  阈值 0.16；转述幅度大时会误判，请人工确认</text>
-<text x="22.0" y="715" fill="#c9d1d9" font-size="13" xml:space="preserve">      [1]</text>
-<text x="22.0" y="757" fill="#6e7681" font-size="13" xml:space="preserve">──────────────────────────────────────────────────────</text>
-<text x="22.0" y="778" fill="#c9d1d9" font-size="13" xml:space="preserve">  12 条引用 · 4 条有问题 · 2 条可疑 · 6 条通过</text>
-<text x="22.0" y="799" fill="#c9d1d9" font-size="13" xml:space="preserve">  伪造率 33.3%</text>
+<text x="22.0" y="232" fill="#c9d1d9" font-size="13" xml:space="preserve">        品牌复购率已提升至 47.2%，用户黏性显著增强 [3]。</text>
+<text x="22.0" y="253" fill="#6e7681" font-size="13" xml:space="preserve">        · 这些数字在信源里找不到：47.2</text>
+<text x="22.0" y="274" fill="#6e7681" font-size="13" xml:space="preserve">        · 与信源的字面重合度仅 0.04，原文中找不到相近表述</text>
+<text x="22.0" y="295" fill="#c9d1d9" font-size="13" xml:space="preserve">          阈值 0.16；转述幅度大时会误判，请人工确认</text>
+<text x="22.0" y="316" fill="#c9d1d9" font-size="13" xml:space="preserve">        [3] · 信源：consumer-survey.md</text>
+<text x="22.0" y="358" fill="#c9d1d9" font-size="13" xml:space="preserve">  27  </text>
+<text x="72.4" y="358" fill="#d29922" font-size="13" xml:space="preserve">!</text>
+<text x="80.8" y="358" fill="#c9d1d9" font-size="13" xml:space="preserve"> 信源打不开</text>
+<text x="22.0" y="379" fill="#c9d1d9" font-size="13" xml:space="preserve">        某头部品牌单店日均出杯量已达 1,200 杯，远超行业平均水平 [2]。</text>
+<text x="22.0" y="400" fill="#6e7681" font-size="13" xml:space="preserve">        · 链接未联网校验：https://example.invalid/coffee/store-efficiency</text>
+<text x="22.0" y="421" fill="#c9d1d9" font-size="13" xml:space="preserve">          加 --fetch 可实际抓取该链接</text>
+<text x="22.0" y="442" fill="#c9d1d9" font-size="13" xml:space="preserve">        [2]</text>
+<text x="22.0" y="484" fill="#c9d1d9" font-size="13" xml:space="preserve">  31  </text>
+<text x="72.4" y="484" fill="#f85149" font-size="13" xml:space="preserve">✗</text>
+<text x="80.8" y="484" fill="#c9d1d9" font-size="13" xml:space="preserve"> 找不到对应信源</text>
+<text x="22.0" y="505" fill="#c9d1d9" font-size="13" xml:space="preserve">        据预测，2030 年中国咖啡市场将突破 3,000 亿元，成为全球第二大市场 [4]。</text>
+<text x="22.0" y="526" fill="#6e7681" font-size="13" xml:space="preserve">        · 参考文献「中国咖啡行业白皮书 2025」没有链接，本地也没有同名信源</text>
+<text x="22.0" y="547" fill="#c9d1d9" font-size="13" xml:space="preserve">        [4]</text>
+<text x="22.0" y="589" fill="#c9d1d9" font-size="13" xml:space="preserve">  33  </text>
+<text x="72.4" y="589" fill="#f85149" font-size="13" xml:space="preserve">✗</text>
+<text x="80.8" y="589" fill="#c9d1d9" font-size="13" xml:space="preserve"> 参考文献里没有这一条</text>
+<text x="22.0" y="610" fill="#c9d1d9" font-size="13" xml:space="preserve">        咖啡消费正在从社交属性转向功能性摄入，早餐时段占比显著上升 [6]。</text>
+<text x="22.0" y="631" fill="#6e7681" font-size="13" xml:space="preserve">        · 正文引用了 [6]，但参考文献表里没有第 6 条</text>
+<text x="22.0" y="652" fill="#c9d1d9" font-size="13" xml:space="preserve">        [6]</text>
+<text x="22.0" y="694" fill="#c9d1d9" font-size="13" xml:space="preserve">  35  </text>
+<text x="72.4" y="694" fill="#d29922" font-size="13" xml:space="preserve">!</text>
+<text x="80.8" y="694" fill="#c9d1d9" font-size="13" xml:space="preserve"> 原文中找不到相近表述</text>
+<text x="22.0" y="715" fill="#c9d1d9" font-size="13" xml:space="preserve">        整个产业链正在经历一场由数字化驱动的结构性重塑 [1]。</text>
+<text x="22.0" y="736" fill="#6e7681" font-size="13" xml:space="preserve">        · 与信源的字面重合度仅 0.00，原文中找不到相近表述</text>
+<text x="22.0" y="757" fill="#c9d1d9" font-size="13" xml:space="preserve">          阈值 0.16；转述幅度大时会误判，请人工确认</text>
+<text x="22.0" y="778" fill="#c9d1d9" font-size="13" xml:space="preserve">        [1]</text>
+<text x="22.0" y="820" fill="#6e7681" font-size="13" xml:space="preserve">──────────────────────────────────────────────────────</text>
+<text x="22.0" y="841" fill="#c9d1d9" font-size="13" xml:space="preserve">  12 条引用 · 4 条有问题 · 2 条可疑 · 6 条通过</text>
+<text x="22.0" y="862" fill="#c9d1d9" font-size="13" xml:space="preserve">  伪造率 33.3%（4/12，只算确定性错误）</text>
 </svg>

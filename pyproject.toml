@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "deadcite"
-version = "0.1.0"
+version = "0.2.0"
 description = "找出 AI 生成报告里的假引用：不存在的来源、打不开的链接、原文里根本没有的数字"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -31,3 +31,6 @@ Homepage = "https://github.com/DIUDIU1HAO/deadcite"
 
 [tool.setuptools]
 packages = ["deadcite"]
+
+[tool.setuptools.package-data]
+deadcite = ["py.typed"]
