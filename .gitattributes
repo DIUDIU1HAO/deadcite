@@ -1,0 +1,11 @@
+* text=auto eol=lf
+
+*.py text eol=lf
+*.md text eol=lf
+*.toml text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.svg text eol=lf
+
+# 信源与报告必须保持原样，避免行尾转换改变字面比对结果
+examples/sources/** -text

@@ -1,0 +1,20 @@
+# pre-commit 钩子配置：让报告在提交前先过一遍引用体检
+#
+# 用法（.pre-commit-config.yaml）：
+#   repos:
+#     - repo: https://github.com/DIUDIU1HAO/deadcite
+#       rev: v0.1.0
+#       hooks:
+#         - id: deadcite
+#           files: ^reports/.*\.md$      # 按你的报告目录改
+#
+- id: deadcite
+  name: deadcite 引用体检
+  description: 检查报告里的引用是否悬空、来源是否可定位、数字是否真的存在于原文
+  entry: deadcite --fail-on problem --no-color
+  language: python
+  types_or: [markdown, text]
+  # 只检查报告目录，避免把 README 之类的文档也卷进来
+  files: ^(reports|output|reports-out)/.*\.(md|txt|markdown)$
+  pass_filenames: true
+  require_serial: true

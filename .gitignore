@@ -1,0 +1,27 @@
+# 构建产物
+build/
+dist/
+*.egg-info/
+__pycache__/
+*.py[cod]
+.eggs/
+
+# 测试与工具缓存
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# 环境
+.venv/
+venv/
+.env
+
+# 编辑器
+.vscode/
+.idea/
+.DS_Store
+
+# 本地试跑产物
+out.json
