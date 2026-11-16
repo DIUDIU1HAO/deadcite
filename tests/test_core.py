@@ -162,8 +162,9 @@ def test_cli_json_output_is_valid(capsys):
     main([os.path.join(EXAMPLES, "report.md"), "--json"])
     out = capsys.readouterr().out
     payload = json.loads(out)
-    assert payload["summary"]["total"] == 12
-    assert len(payload["citations"]) == 12
+    assert isinstance(payload, list) and len(payload) == 1
+    assert payload[0]["summary"]["total"] == 12
+    assert len(payload[0]["citations"]) == 12
 
 
 # --------------------------------------------------------------------------- #
@@ -195,3 +196,23 @@ def test_real_citation_still_detected_after_masking():
     text = "市场规模为 1,842 亿元 [1]。\n"
     claims = list(collect_claims(text))
     assert len(claims) == 1 and claims[0].refs == ["1"]
+
+
+def test_json_output_is_always_an_array(tmp_path, capsys):
+    """单文件与多文件的 JSON 类型必须一致，否则下游解析会分裂。"""
+    import json
+
+    from deadcite.cli import main
+
+    one = tmp_path / "a.md"
+    one.write_text("市场规模 1,842 亿元 [1]。\n", encoding="utf-8")
+    two = tmp_path / "b.md"
+    two.write_text("产量 37 万吨 [1]。\n", encoding="utf-8")
+
+    for targets in ([str(one)], [str(one), str(two)]):
+        capsys.readouterr()
+        main(list(targets) + ["--json"])
+        out = capsys.readouterr().out
+        payload = json.loads(out)
+        assert isinstance(payload, list)
+        assert len(payload) == len(targets)

@@ -104,20 +104,23 @@ python -m deadcite examples/report.md
       [1] · 信源：coffee-market-2024.md
 ```
 
-JSON（供流水线消费）：
+JSON（供流水线消费，**始终是数组**，一个报告一个元素）：
 
 ```json
-{
-  "summary": {"total": 12, "problems": 4, "suspects": 2, "ok": 6},
-  "citations": [
-    {
-      "line": 9,
-      "status": "problem",
-      "source": "coffee-market-2024.md",
-      "issues": [{"kind": "NUMBER_NOT_FOUND", "severity": "problem"}]
-    }
-  ]
-}
+[
+  {
+    "file": "report.md",
+    "summary": {"total": 12, "problems": 4, "suspects": 2, "ok": 6},
+    "citations": [
+      {
+        "line": 9,
+        "status": "problem",
+        "source": "coffee-market-2024.md",
+        "issues": [{"kind": "NUMBER_NOT_FOUND", "severity": "problem"}]
+      }
+    ]
+  }
+]
 ```
 
 ## 接到生成流水线后面

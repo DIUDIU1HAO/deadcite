@@ -136,8 +136,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             exit_code = 1
 
     if args.json:
-        joined = ",\n".join(json_parts)
-        print("[" + joined + "]" if len(json_parts) > 1 else joined)
+        # 始终输出数组：单文件与多文件的类型必须一致，否则下游解析会分裂
+        print("[" + ",\n".join(json_parts) + "]")
 
     return exit_code
 
