@@ -22,7 +22,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
+          # ubuntu-latest 已是 26.04，其 python-versions 缓存里没有 3.9，
+          # 所以 3.9 的 Linux 组合固定在 22.04；3.12+ 用 latest 即可。
+          - os: ubuntu-22.04
             python: "3.9"
           - os: ubuntu-latest
             python: "3.12"
