@@ -70,7 +70,7 @@ sources/ ───┴─→ 切块并建索引 ──────┘
 pip install git+https://github.com/DIUDIU1HAO/deadcite.git
 ```
 
-零第三方依赖，Python 3.8+。
+零第三方依赖，Python 3.9+。
 
 ## 用法
 

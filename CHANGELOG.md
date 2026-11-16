@@ -18,7 +18,7 @@
 
 ### 工程
 
-- 零第三方依赖，Python 3.8+。
+- 零第三方依赖，Python 3.9+。
 - 终端 / JSON 两种输出，退出码 `0/1/2` 可接入 CI。
 - `--fail-on problem|suspect|none` 控制门禁严格程度。
 - 信源支持 `.md` / `.txt` / `.html` / `.csv`，自动按段落切块并计算重合度。
